@@ -1,0 +1,13 @@
+diff --git a/src/utils.js b/src/utils.js
+index 1111111..2222222 100644
+--- a/src/utils.js
++++ b/src/utils.js
+@@ -1,4 +1,9 @@
+ function add(a, b) {
+   return a + b;
+ }
++
++function multiply(a, b) {
++  // Simple multiplication helper used by the billing module.
++  return a * b;
++}

@@ -1,0 +1,41 @@
+{
+  "name": "vigilagent",
+  "version": "0.1.0",
+  "description": "Security auditing CLI for AI-agent-authored code changesets (diffs from Claude Code, Cursor, etc.)",
+  "type": "module",
+  "bin": {
+    "vigilagent": "dist/src/cli.js"
+  },
+  "main": "dist/src/cli.js",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc && node scripts/copy-fixtures.js",
+    "test": "npm run build && node --test \"dist/tests/**/*.test.js\"",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "security",
+    "ai-agent",
+    "diff",
+    "cli",
+    "audit",
+    "static-analysis",
+    "prompt-injection",
+    "supply-chain"
+  ],
+  "author": "Sunil Gentyala",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sunilgentyala/VigilAgent.git"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.12.0",
+    "typescript": "^5.5.0"
+  }
+}

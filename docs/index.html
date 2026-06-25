@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>VigilAgent — Security auditing for AI-agent-authored code</title>
+<meta name="description" content="VigilAgent is a security auditing CLI for AI-agent-authored code changesets: package hallucination detection, prompt injection auditing, and AI-specific defect heuristics." />
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<div class="bg-grid" aria-hidden="true"></div>
+
+<header class="site-header">
+  <nav class="nav">
+    <a class="brand" href="#top">
+      <span class="brand-glyph">&gt;_</span>
+      <span class="brand-text">VigilAgent</span>
+    </a>
+    <div class="nav-links">
+      <a href="#modules">Modules</a>
+      <a href="#demo">Demo</a>
+      <a href="#quickstart">Quickstart</a>
+      <a href="#architecture">Architecture</a>
+      <a class="nav-cta" href="https://github.com/sunilgentyala/VigilAgent" target="_blank" rel="noopener">GitHub</a>
+    </div>
+  </nav>
+</header>
+
+<main id="top">
+  <section class="hero">
+    <div class="hero-badge">v0.1.0 &middot; open source &middot; MIT</div>
+    <h1>Security review for the code your<br /><span class="accent">AI agent</span> just wrote.</h1>
+    <p class="hero-sub">
+      VigilAgent audits diffs from Claude Code, Cursor, and other coding agents for
+      hallucinated dependencies, smuggled prompt-injection directives, and the
+      security defects AI agents introduce more often than humans do —
+      swallowed exceptions, placeholder credentials, naive cryptography.
+    </p>
+    <div class="hero-actions">
+      <a class="btn btn-primary" href="#quickstart">Get started</a>
+      <a class="btn btn-ghost" href="https://github.com/sunilgentyala/VigilAgent" target="_blank" rel="noopener">View on GitHub</a>
+    </div>
+    <div class="hero-terminal">
+      <div class="term-window">
+        <div class="term-titlebar">
+          <span class="term-dot dot-red"></span>
+          <span class="term-dot dot-yellow"></span>
+          <span class="term-dot dot-green"></span>
+          <span class="term-title">vigilagent</span>
+        </div>
+        <pre class="term-body" id="hero-typed"></pre>
+      </div>
+    </div>
+  </section>
+
+  <section class="gap" id="gap">
+    <h2>Why existing diff tools miss this</h2>
+    <p class="section-sub">
+      Terminal diff and review tools converged on visualization and review ergonomics.
+      None of them audit content for the failure modes specific to AI-agent-authored code.
+    </p>
+    <div class="gap-table-wrap">
+      <table class="gap-table">
+        <thead>
+          <tr><th>Tool</th><th>Focus</th><th>Agent-aware</th><th>Security checks</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>hunk</td><td>Review-first terminal diff viewer</td><td class="yes">Yes</td><td class="no">None — visualization only</td></tr>
+          <tr><td>slop-scan</td><td>"AI slop" pattern scan</td><td class="partial">Partial</td><td class="no">Style/quality heuristics only</td></tr>
+          <tr><td>difftastic</td><td>Structural AST diff</td><td class="no">No</td><td class="no">None</td></tr>
+          <tr><td>delta</td><td>Syntax-highlighted diff pager</td><td class="no">No</td><td class="no">None</td></tr>
+          <tr><td>diffnav</td><td>Delta + file-tree navigation</td><td class="no">No</td><td class="no">None</td></tr>
+          <tr><td>codiff</td><td>LLM walkthrough/review mode</td><td class="partial">Partial</td><td class="no">Summarizes, doesn't audit</td></tr>
+          <tr class="highlight-row"><td>VigilAgent</td><td>Security audit for agent diffs</td><td class="yes">Yes</td><td class="yes">Hallucination + injection + defect heuristics</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="modules" id="modules">
+    <h2>Three detectors, purpose-built for agent output</h2>
+    <div class="module-grid">
+      <article class="module-card">
+        <div class="module-icon">&#128230;</div>
+        <h3>Package Hallucination Guard</h3>
+        <p>
+          Extracts newly added dependencies from <code>package.json</code>,
+          <code>requirements.txt</code>, and <code>Cargo.toml</code> diffs and
+          checks each one against the live npm, PyPI, and crates.io registries.
+          A 404 means the agent likely invented a package name or got
+          typosquatted &mdash; flagged HIGH severity. Network failures are
+          reported as <em>unverified</em>, never as a false vulnerability.
+        </p>
+        <div class="module-tags">
+          <span>npm</span><span>PyPI</span><span>crates.io</span>
+        </div>
+      </article>
+      <article class="module-card">
+        <div class="module-icon">&#128272;</div>
+        <h3>Prompt Injection Auditor</h3>
+        <p>
+          Scans added comments and string literals for directives aimed at an
+          AI agent: "ignore previous instructions," "as an AI you must...,"
+          replacement system prompts, instructions to conceal actions from a
+          reviewer, secret-exfiltration directives, zero-width steganography
+          characters, and suspicious base64 blobs near injection keywords.
+        </p>
+        <div class="module-tags">
+          <span>indirect injection</span><span>steganography</span><span>jailbreak patterns</span>
+        </div>
+      </article>
+      <article class="module-card">
+        <div class="module-icon">&#9888;</div>
+        <h3>AI Defect Heuristics</h3>
+        <p>
+          Detects the security-bearing defects that show up disproportionately
+          in agent-authored diffs: empty or comment-only catch blocks that
+          swallow exceptions, hardcoded placeholder credentials, and naive
+          cryptography &mdash; <code>Math.random()</code> for tokens, MD5,
+          DES/3DES, AES-ECB.
+        </p>
+        <div class="module-tags">
+          <span>swallowed exceptions</span><span>placeholder creds</span><span>naive crypto</span>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="demo" id="demo">
+    <h2>See it in action</h2>
+    <div class="term-window large">
+      <div class="term-titlebar">
+        <span class="term-dot dot-red"></span>
+        <span class="term-dot dot-yellow"></span>
+        <span class="term-dot dot-green"></span>
+        <span class="term-title">git diff | vigilagent</span>
+      </div>
+      <pre class="term-body" id="demo-output"><span class="t-bold">VigilAgent Security Audit</span>
+<span class="t-dim">Files scanned: 2</span>
+
+<span class="t-bold t-red">HIGH (3)</span>
+  <span class="t-red">[hallucinated-package]</span> package.json:7
+    Package "fastify-super-turbo-async-helper-totally-real" was not found on
+    the npm registry. This may be a hallucinated or typosquatted dependency
+    introduced by an AI coding agent.
+    <span class="t-dim">&gt; fastify-super-turbo-async-helper-totally-real</span>
+  <span class="t-red">[swallowed-exception]</span> src/payments.js:5
+    Catch block contains only comments or nothing &mdash; the exception is
+    swallowed with no logging, rethrow, or handling, silently hiding failures.
+    <span class="t-dim">&gt; } catch (e) {</span>
+  <span class="t-red">[math-random-for-security-token]</span> src/payments.js:10
+    Math.random() is not cryptographically secure and must not be used to
+    generate tokens, keys, salts, or nonces; use crypto.randomBytes /
+    crypto.getRandomValues instead.
+    <span class="t-dim">&gt; const token = Math.random().toString(36);</span>
+
+<span class="t-bold t-red">Summary: 3 finding(s) — 3 HIGH severity</span></pre>
+    </div>
+  </section>
+
+  <section class="quickstart" id="quickstart">
+    <h2>Quickstart</h2>
+    <div class="code-grid">
+      <div class="code-block">
+        <div class="code-label">Install</div>
+        <pre><code>npm install -g vigilagent</code></pre>
+      </div>
+      <div class="code-block">
+        <div class="code-label">Audit uncommitted changes</div>
+        <pre><code>git diff | vigilagent</code></pre>
+      </div>
+      <div class="code-block">
+        <div class="code-label">Audit a patch file</div>
+        <pre><code>vigilagent ./agent-change.patch</code></pre>
+      </div>
+      <div class="code-block">
+        <div class="code-label">CI security gate</div>
+        <pre><code>git diff origin/main...HEAD \
+  | vigilagent --fail-on-vuln</code></pre>
+      </div>
+      <div class="code-block">
+        <div class="code-label">Markdown report</div>
+        <pre><code>git diff main...feature \
+  | vigilagent --markdown > report.md</code></pre>
+      </div>
+      <div class="code-block">
+        <div class="code-label">JSON for tooling</div>
+        <pre><code>git diff | vigilagent --json</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <section class="architecture" id="architecture">
+    <h2>Architecture</h2>
+    <div class="arch-diagram">
+      <div class="arch-row">
+        <div class="arch-box arch-input">diff text<br /><span>stdin / .patch / git diff</span></div>
+        <div class="arch-arrow">&rarr;</div>
+        <div class="arch-box arch-parser">diffParser.ts<br /><span>FileDiff[] / DiffHunk[]</span></div>
+        <div class="arch-arrow">&rarr;</div>
+        <div class="arch-box arch-modules-wrap">
+          <div class="arch-module">packageHallucinationGuard</div>
+          <div class="arch-module">promptInjectionAuditor</div>
+          <div class="arch-module">aiDefectHeuristics</div>
+        </div>
+        <div class="arch-arrow">&rarr;</div>
+        <div class="arch-box arch-output">output/<br /><span>terminal &middot; json &middot; markdown</span></div>
+      </div>
+    </div>
+    <p class="section-sub">
+      A dependency-free unified diff parser feeds structured per-file hunks to
+      three independent detection modules running in parallel, whose findings
+      are merged into a single report and rendered in your chosen format, with
+      an optional <code>--fail-on-vuln</code> exit-code gate for CI.
+    </p>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div>VigilAgent &middot; MIT License &middot; &copy; 2026 Sunil Gentyala</div>
+  <a href="https://github.com/sunilgentyala/VigilAgent" target="_blank" rel="noopener">github.com/sunilgentyala/VigilAgent</a>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
