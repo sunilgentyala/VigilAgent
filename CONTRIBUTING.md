@@ -25,19 +25,19 @@ changes, and again before you open a pull request.
 
 ## Project structure
 
-- `src/parser/` — the unified diff parser. Changes here affect every module,
+- `src/parser/`: the unified diff parser. Changes here affect every module,
   so be conservative and add fixtures for any new diff shape you need to
   support.
-- `src/modules/` — the three detection modules:
-  - `packageHallucinationGuard.ts` — dependency manifest parsing + registry
+- `src/modules/`: the three detection modules:
+  - `packageHallucinationGuard.ts`: dependency manifest parsing and registry
     lookups (npm, PyPI, crates.io).
-  - `promptInjectionAuditor.ts` — regex/heuristic scanning for AI-directed
+  - `promptInjectionAuditor.ts`: regex/heuristic scanning for AI-directed
     directives smuggled into comments/strings.
-  - `aiDefectHeuristics.ts` — swallowed exceptions, placeholder credentials,
+  - `aiDefectHeuristics.ts`: swallowed exceptions, placeholder credentials,
     naive cryptography.
-- `src/output/` — JSON, Markdown, and terminal renderers.
-- `src/cli.ts` — argument parsing and entrypoint wiring.
-- `tests/` — `node:test` unit tests with fixture diffs under
+- `src/output/`: JSON, Markdown, and terminal renderers.
+- `src/cli.ts`: argument parsing and entrypoint wiring.
+- `tests/`: `node:test` unit tests with fixture diffs under
   `tests/fixtures/`.
 
 ## Adding a new detection rule
@@ -54,7 +54,7 @@ changes, and again before you open a pull request.
 ## Code style
 
 - TypeScript, strict mode. No `any` unless genuinely unavoidable.
-- No stub/TODO code paths — every code path should do something real.
+- No stub/TODO code paths; every code path should do something real.
 - Network calls must fail gracefully (treat unreachable registries as
   "unverified," never crash the process and never silently report a false
   vulnerability).

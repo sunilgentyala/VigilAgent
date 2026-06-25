@@ -74,7 +74,7 @@ export function renderTerminal(report: AuditReport, options: TerminalRenderOptio
   const summaryColor = highCount > 0 ? ANSI.red : ANSI.green;
   lines.push(
     colorize(
-      `Summary: ${report.findings.length} finding(s) — ${highCount} HIGH severity`,
+      `Summary: ${report.findings.length} finding(s), ${highCount} HIGH severity`,
       `${ANSI.bold}${summaryColor}`,
       useColor
     )

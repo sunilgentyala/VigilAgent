@@ -5,7 +5,7 @@
  * directive-like patterns aimed at an AI coding agent. This catches
  * "indirect prompt injection" that has been smuggled into source through an
  * ingested issue, ticket, third-party doc, or dependency README and then
- * reproduced verbatim by an agent into committed code — a vector none of
+ * reproduced verbatim by an agent into committed code, a vector none of
  * the existing terminal diff tools audit for.
  */
 
@@ -31,7 +31,7 @@ const INSTRUCTION_OVERRIDE_RULES: InjectionRule[] = [
     rule: "ai-must-directive",
     severity: "HIGH",
     pattern: /\bas an? (ai|assistant|language model)\b.{0,40}\b(you must|you should|you will|you are required to)\b/i,
-    describe: () => 'Directive addressing "as an AI ... you must/should" — classic indirect prompt injection phrasing.',
+    describe: () => 'Directive addressing "as an AI ... you must/should": classic indirect prompt injection phrasing.',
   },
   {
     rule: "system-prompt-override",
@@ -128,7 +128,7 @@ export function auditFile(file: FileDiff): Finding[] {
         severity: "HIGH",
         rule: "zero-width-steganography",
         message:
-          "Zero-width or bidirectional-override Unicode character detected — a known technique for hiding instructions from human reviewers while an AI agent's tokenizer still reads them.",
+          "Zero-width or bidirectional-override Unicode character detected: a known technique for hiding instructions from human reviewers while an AI agent's tokenizer still reads them.",
         file: file.path,
         line: line.newLineNumber,
         snippet: JSON.stringify(content.trim().slice(0, 80)),

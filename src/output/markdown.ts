@@ -42,7 +42,7 @@ export function renderMarkdown(report: AuditReport): string {
     lines.push("");
     for (const f of items) {
       const location = f.line ? `${f.file}:${f.line}` : f.file;
-      lines.push(`- **[${f.rule}]** ${location} — ${f.message}`);
+      lines.push(`- **[${f.rule}]** ${location}: ${f.message}`);
       if (f.snippet) {
         lines.push(`  \`\`\``);
         lines.push(`  ${f.snippet}`);

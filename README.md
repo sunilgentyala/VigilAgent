@@ -1,6 +1,6 @@
 # VigilAgent
 
-Security auditing CLI for AI-agent-authored code changesets — diffs produced
+Security auditing CLI for AI-agent-authored code changesets: diffs produced
 by Claude Code, Cursor, Copilot Workspace, and similar coding agents.
 
 VigilAgent reads a unified diff and runs three security-focused detectors
@@ -11,33 +11,32 @@ CI exit-code gate.
 ## Why VigilAgent
 
 Terminal diff and review tools have converged on visualization and review
-ergonomics: [hunk](https://github.com/modem-dev/hunk) and
-[codiff](https://github.com/modem-dev/codiff) are built for agent workflows
-but don't audit content; [difftastic](https://github.com/Wilfred/difftastic),
-[delta](https://github.com/dandavison/delta), and
-[diffnav](https://github.com/dandavison/diffnav) render diffs beautifully but
-perform no security checks at all; "AI slop" scanners like
-[slop-scan](https://github.com/modem-dev/slop-scan) catch style and dead-code
-smells, not security defects.
+ergonomics, not security. Agent-oriented diff viewers make it easier to
+follow what an agent changed, but they don't audit content. Structural and
+syntax-highlighting tools render diffs beautifully but perform no security
+checks at all. "AI slop" scanners catch style and dead-code smells, such as
+narrative comments and oversized functions, not security defects.
 
-None of them close these gaps, which are specific to AI-agent-authored code:
+VigilAgent is the layer none of them are: a detector built specifically for
+the failure modes that show up when an agent, not a human, authored the
+change. It closes four gaps that are specific to AI-agent-authored code:
 
-1. **Package hallucination** — coding agents occasionally invent
+1. **Package hallucination**: coding agents occasionally invent
    plausible-sounding package names that don't exist on the real registry,
    or get talked into adding a typosquatted lookalike. Nothing cross-checks
    newly added `package.json` / `requirements.txt` / `Cargo.toml` entries
    against the live npm/PyPI/crates.io registries.
-2. **Indirect prompt injection in generated code** — an agent that ingests an
+2. **Indirect prompt injection in generated code**: an agent that ingests an
    issue, ticket, or third-party doc can reproduce embedded directives
    ("ignore previous instructions", "as an AI you must...") verbatim into
    comments or strings in the diff it produces. No reviewed tool scans for
    this.
-3. **AI-specific defect heuristics** — swallowed exceptions that mask real
+3. **AI-specific defect heuristics**: swallowed exceptions that mask real
    failures, hardcoded placeholder credentials left over from a scaffold,
    and naive/deprecated cryptography (`Math.random()` for tokens, MD5, DES)
    show up disproportionately often in agent-authored diffs and aren't what
    generic slop scanners look for.
-4. **CI gating keyed to security, not style** — `--fail-on-vuln` gives you a
+4. **CI gating keyed to security, not style**: `--fail-on-vuln` gives you a
    single exit-code gate for HIGH severity findings, suitable for a
    pre-merge check on agent-authored branches.
 
@@ -109,7 +108,7 @@ HIGH (3)
     introduced by an AI coding agent.
     > fastify-super-turbo-async-helper-totally-real
   [swallowed-exception] src/payments.js:5
-    Catch block contains only comments or nothing — the exception is
+    Catch block contains only comments or nothing: the exception is
     swallowed with no logging, rethrow, or handling, silently hiding failures.
     > } catch (e) {
   [math-random-for-security-token] src/payments.js:10
@@ -118,7 +117,7 @@ HIGH (3)
     crypto.getRandomValues instead.
     > const token = Math.random().toString(36);
 
-Summary: 3 finding(s) — 3 HIGH severity
+Summary: 3 finding(s), 3 HIGH severity
 ```
 
 ## Architecture
@@ -156,7 +155,7 @@ Extracts newly added dependency lines from `package.json` (inside
 
 A `404` is flagged as a HIGH severity `hallucinated-package` finding.
 Network errors, timeouts, and non-404 error statuses are reported as INFO
-severity `unverified-package` findings — VigilAgent never reports a package
+severity `unverified-package` findings. VigilAgent never reports a package
 as hallucinated just because the registry was unreachable.
 
 ### Prompt Injection Auditor
@@ -177,14 +176,14 @@ Scans added lines that look like comments or string literals for:
 
 ### AI Defect Heuristics
 
-- **Swallowed exceptions** — empty `catch (e) {}` blocks, catch blocks whose
+- **Swallowed exceptions**: empty `catch (e) {}` blocks, catch blocks whose
   body is comment-only, and Python `except:` blocks that do nothing but
   `pass`. Detection is diff-aware: a finding only fires when the diff itself
   touched the block (so untouched pre-existing code is never flagged).
-- **Hardcoded placeholder credentials** — `TODO: secure this`, literal
+- **Hardcoded placeholder credentials**: `TODO: secure this`, literal
   placeholder passwords (`changeme`, `password123`, etc.), API keys/tokens
   assigned as string literals, AWS access key ID patterns.
-- **Naive/deprecated cryptography** — `Math.random()` used for
+- **Naive/deprecated cryptography**: `Math.random()` used for
   tokens/keys/nonces/salts, MD5/SHA-1-for-passwords/DES/3DES usage, AES-ECB
   mode.
 
@@ -197,8 +196,8 @@ npm test        # builds, then runs node:test against dist/tests/
 ```
 
 Tests use Node's built-in `node:test` + `node:assert` runner against fixture
-diffs in `tests/fixtures/` — no Jest or other test framework dependency.
+diffs in `tests/fixtures/`, with no Jest or other test framework dependency.
 
 ## License
 
-MIT — see [LICENSE](LICENSE).
+MIT, see [LICENSE](LICENSE).

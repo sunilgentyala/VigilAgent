@@ -1,4 +1,4 @@
-// VigilAgent docs site — small interactive touches, no build step.
+// VigilAgent docs site: small interactive touches, no build step.
 // Types out a sample command in the hero terminal mockup, then reveals
 // a canned response, looping on an interval.
 
@@ -16,7 +16,7 @@
     { type: "rule", text: "  [math-random-for-security-token] src/payments.js:10" },
     { type: "dim", text: "    > const token = Math.random().toString(36);" },
     { type: "blank" },
-    { type: "redbold", text: "Summary: 3 finding(s) — 3 HIGH severity" },
+    { type: "redbold", text: "Summary: 3 finding(s), 3 HIGH severity" },
   ];
 
   const el = document.getElementById("hero-typed");

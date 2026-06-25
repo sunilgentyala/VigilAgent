@@ -18,7 +18,7 @@ interface CliOptions {
 }
 
 function printHelp(): void {
-  console.log(`VigilAgent — security auditing CLI for AI-agent-authored code changesets
+  console.log(`VigilAgent: security auditing CLI for AI-agent-authored code changesets
 
 Usage:
   vigilagent [path] [options]

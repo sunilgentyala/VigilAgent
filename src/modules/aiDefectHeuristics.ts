@@ -96,7 +96,7 @@ function detectSwallowedCatch(file: FileDiff): Finding[] {
               severity: "HIGH",
               rule: "swallowed-exception",
               message:
-                "Catch block contains only comments or nothing — the exception is swallowed with no logging, rethrow, or handling, silently hiding failures.",
+                "Catch block contains only comments or nothing: the exception is swallowed with no logging, rethrow, or handling, silently hiding failures.",
               file: file.path,
               line: reportLine.newLineNumber,
               snippet: line.content.trim(),

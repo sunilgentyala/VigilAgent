@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>VigilAgent — Security auditing for AI-agent-authored code</title>
+<title>VigilAgent: Security auditing for AI-agent-authored code</title>
 <meta name="description" content="VigilAgent is a security auditing CLI for AI-agent-authored code changesets: package hallucination detection, prompt injection auditing, and AI-specific defect heuristics." />
 <link rel="stylesheet" href="styles.css" />
 </head>
@@ -33,7 +33,7 @@
     <p class="hero-sub">
       VigilAgent audits diffs from Claude Code, Cursor, and other coding agents for
       hallucinated dependencies, smuggled prompt-injection directives, and the
-      security defects AI agents introduce more often than humans do —
+      security defects AI agents introduce more often than humans do:
       swallowed exceptions, placeholder credentials, naive cryptography.
     </p>
     <div class="hero-actions">
@@ -65,7 +65,7 @@
           <tr><th>Tool</th><th>Focus</th><th>Agent-aware</th><th>Security checks</th></tr>
         </thead>
         <tbody>
-          <tr><td>hunk</td><td>Review-first terminal diff viewer</td><td class="yes">Yes</td><td class="no">None — visualization only</td></tr>
+          <tr><td>hunk</td><td>Review-first terminal diff viewer</td><td class="yes">Yes</td><td class="no">None: visualization only</td></tr>
           <tr><td>slop-scan</td><td>"AI slop" pattern scan</td><td class="partial">Partial</td><td class="no">Style/quality heuristics only</td></tr>
           <tr><td>difftastic</td><td>Structural AST diff</td><td class="no">No</td><td class="no">None</td></tr>
           <tr><td>delta</td><td>Syntax-highlighted diff pager</td><td class="no">No</td><td class="no">None</td></tr>
@@ -88,7 +88,7 @@
           <code>requirements.txt</code>, and <code>Cargo.toml</code> diffs and
           checks each one against the live npm, PyPI, and crates.io registries.
           A 404 means the agent likely invented a package name or got
-          typosquatted &mdash; flagged HIGH severity. Network failures are
+          typosquatted, flagged HIGH severity. Network failures are
           reported as <em>unverified</em>, never as a false vulnerability.
         </p>
         <div class="module-tags">
@@ -116,7 +116,7 @@
           Detects the security-bearing defects that show up disproportionately
           in agent-authored diffs: empty or comment-only catch blocks that
           swallow exceptions, hardcoded placeholder credentials, and naive
-          cryptography &mdash; <code>Math.random()</code> for tokens, MD5,
+          cryptography: <code>Math.random()</code> for tokens, MD5,
           DES/3DES, AES-ECB.
         </p>
         <div class="module-tags">
@@ -145,7 +145,7 @@
     introduced by an AI coding agent.
     <span class="t-dim">&gt; fastify-super-turbo-async-helper-totally-real</span>
   <span class="t-red">[swallowed-exception]</span> src/payments.js:5
-    Catch block contains only comments or nothing &mdash; the exception is
+    Catch block contains only comments or nothing: the exception is
     swallowed with no logging, rethrow, or handling, silently hiding failures.
     <span class="t-dim">&gt; } catch (e) {</span>
   <span class="t-red">[math-random-for-security-token]</span> src/payments.js:10
@@ -154,7 +154,7 @@
     crypto.getRandomValues instead.
     <span class="t-dim">&gt; const token = Math.random().toString(36);</span>
 
-<span class="t-bold t-red">Summary: 3 finding(s) — 3 HIGH severity</span></pre>
+<span class="t-bold t-red">Summary: 3 finding(s), 3 HIGH severity</span></pre>
     </div>
   </section>
 

@@ -5,7 +5,7 @@
  * requirements.txt, and Cargo.toml diffs, then cross-references each
  * package name against the live public registry (npm, PyPI, crates.io).
  * Packages that the registry has never heard of (HTTP 404) are flagged as
- * likely hallucinated or typosquatted — a known failure mode of AI coding
+ * likely hallucinated or typosquatted, a known failure mode of AI coding
  * agents that invent plausible-sounding package names.
  *
  * Network failures are treated as "unverified", never as a vulnerability:
@@ -59,7 +59,7 @@ export class HttpRegistryChecker implements RegistryChecker {
       if (res.ok) {
         return "found";
       }
-      // Non-404 error status (rate limit, 5xx, etc.) — can't conclude either way.
+      // Non-404 error status (rate limit, 5xx, etc.): can't conclude either way.
       return "unverified";
     } catch {
       // Network error, timeout, DNS failure, offline, etc.
