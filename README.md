@@ -1,5 +1,10 @@
 # VigilAgent
 
+[![CI](https://github.com/sunilgentyala/VigilAgent/actions/workflows/ci.yml/badge.svg)](https://github.com/sunilgentyala/VigilAgent/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Node.js](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen)](package.json)
+[![Docs](https://img.shields.io/badge/docs-live-blue)](https://sunilgentyala.github.io/VigilAgent/)
+
 Security auditing CLI for AI-agent-authored code changesets: diffs produced
 by Claude Code, Cursor, Copilot Workspace, and similar coding agents.
 
@@ -39,6 +44,18 @@ change. It closes four gaps that are specific to AI-agent-authored code:
 4. **CI gating keyed to security, not style**: `--fail-on-vuln` gives you a
    single exit-code gate for HIGH severity findings, suitable for a
    pre-merge check on agent-authored branches.
+
+### How it compares
+
+| Tool | Focus | Agent-aware | Security checks |
+|---|---|---|---|
+| hunk | Review-first terminal diff viewer | Yes | None, visualization only |
+| codiff | LLM walkthrough/review mode | Partial | Summarizes, doesn't audit |
+| slop-scan | "AI slop" pattern scan | Partial | Style/quality heuristics only |
+| difftastic | Structural AST diff | No | None |
+| delta | Syntax-highlighted diff pager | No | None |
+| diffnav | Delta + file-tree navigation | No | None |
+| **VigilAgent** | **Security audit for agent diffs** | **Yes** | **Hallucination + injection + defect heuristics** |
 
 ## Install
 
@@ -197,6 +214,23 @@ npm test        # builds, then runs node:test against dist/tests/
 
 Tests use Node's built-in `node:test` + `node:assert` runner against fixture
 diffs in `tests/fixtures/`, with no Jest or other test framework dependency.
+
+## Authors
+
+VigilAgent is built and maintained by Sunil Gentyala. The design is informed
+by ongoing research co-authored with:
+
+- Suresh Kumar Darisi, Senior Systems Engineer, Rocket Software Inc.
+- Vamshi Lande, Research Student, University of North Texas
+- Akhila Kasturi, Research Analyst Lead, HCLTech
+
+A research paper describing VigilAgent's architecture and evaluation
+methodology is currently in preparation.
+
+## Citing this project
+
+If you use VigilAgent in research or tooling, please cite it using the
+metadata in [CITATION.cff](CITATION.cff).
 
 ## License
 

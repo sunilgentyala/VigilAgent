@@ -1,0 +1,31 @@
+cff-version: 1.2.0
+message: "If you use VigilAgent in your research or tooling, please cite it as below."
+title: "VigilAgent: Automated Security Auditing and Hallucination Defenses for Agent-Authored Code Changesets"
+type: software
+version: 0.1.0
+date-released: 2026-06-24
+license: MIT
+repository-code: "https://github.com/sunilgentyala/VigilAgent"
+url: "https://sunilgentyala.github.io/VigilAgent/"
+authors:
+  - family-names: Gentyala
+    given-names: Sunil
+    email: sunil.gentyala@ieee.org
+  - family-names: Darisi
+    given-names: "Suresh Kumar"
+    email: darisi.suresh@ieee.org
+    affiliation: "Rocket Software Inc."
+  - family-names: Lande
+    given-names: Vamshi
+    email: vamshilande@my.unt.edu
+    affiliation: "University of North Texas"
+  - family-names: Kasturi
+    given-names: Akhila
+    email: kasturi.akhila@gmail.com
+    affiliation: "HCLTech"
+keywords:
+  - security
+  - ai-agents
+  - static-analysis
+  - prompt-injection
+  - supply-chain-security

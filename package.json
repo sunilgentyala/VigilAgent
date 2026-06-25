@@ -26,6 +26,11 @@
     "supply-chain"
   ],
   "author": "Sunil Gentyala",
+  "contributors": [
+    "Suresh Kumar Darisi <darisi.suresh@ieee.org>",
+    "Vamshi Lande <vamshilande@my.unt.edu>",
+    "Akhila Kasturi <kasturi.akhila@gmail.com>"
+  ],
   "license": "MIT",
   "repository": {
     "type": "git",
