@@ -220,8 +220,10 @@ diffs in `tests/fixtures/`, with no Jest or other test framework dependency.
 VigilAgent is built and maintained by Sunil Gentyala. The design is informed
 by ongoing research co-authored with:
 
-- Suresh Kumar Darisi, Senior Systems Engineer, Rocket Software Inc.
-- Vamshi Lande, Research Student, University of North Texas
+- Sundarigari Manoj, IT Head, Associate Professor, Department of Cybersecurity,
+  Anil Neerukonda Educational Institute, Visakhapatnam, India
+- Vahiduddin Shariff, Assistant Professor, Department of CSE, Sir C R Reddy
+  College of Engineering, Eluru, India
 - Akhila Kasturi, Research Analyst Lead, HCLTech
 
 A research paper describing VigilAgent's architecture and evaluation
