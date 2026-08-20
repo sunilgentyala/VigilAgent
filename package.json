@@ -1,6 +1,6 @@
 {
   "name": "vigilagent",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Security auditing CLI for AI-agent-authored code changesets (diffs from Claude Code, Cursor, etc.)",
   "type": "module",
   "bin": {

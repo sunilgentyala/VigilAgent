@@ -53,6 +53,10 @@ export class HttpRegistryChecker implements RegistryChecker {
         signal: controller.signal,
         headers: { "User-Agent": "vigilagent-security-audit" },
       });
+      // Drain/cancel the body before returning: an unconsumed response
+      // stream can leave the underlying socket handle open, which crashes
+      // the process on exit on some platforms (observed on Windows/Node 24).
+      await res.body?.cancel().catch(() => {});
       if (res.status === 404) {
         return "not-found";
       }

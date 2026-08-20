@@ -164,9 +164,16 @@ const isMainModule = process.argv[1] && import.meta.url === `file://${process.ar
 
 if (isMainModule || process.argv[1]?.endsWith("cli.js")) {
   main(process.argv.slice(2))
-    .then((code) => process.exit(code))
+    .then((code) => {
+      // Set exitCode and let the event loop drain naturally rather than
+      // calling process.exit() directly: a hard exit() immediately after an
+      // in-flight fetch() completes can race Node's own socket-handle
+      // teardown, which crashes the process on some platforms (observed as
+      // a libuv assertion failure in src/win/async.c on Node 24 / Windows).
+      process.exitCode = code;
+    })
     .catch((err) => {
       console.error("vigilagent: unexpected error:", err);
-      process.exit(2);
+      process.exitCode = 2;
     });
 }

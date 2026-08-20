@@ -173,7 +173,11 @@ const CRYPTO_RULES: DefectRule[] = [
   {
     rule: "math-random-for-security-token",
     severity: "HIGH",
-    pattern: /\b(token|password|secret|key|nonce|salt|sessionid|session_id)\b[^\n]{0,40}Math\.random\(\)|Math\.random\(\)[^\n]{0,40}\b(token|password|secret|key|nonce|salt)\b/i,
+    // No \b around the keyword group: identifiers are usually camelCase
+    // (authToken, sessionKey) or snake_case (_token, api_key), and \b does
+    // not fire at a camelCase hump or across an underscore, which let
+    // Math.random()-backed tokens named e.g. `authToken` go undetected.
+    pattern: /(token|password|secret|key|nonce|salt|sessionid|session_id)[^\n]{0,40}Math\.random\(\)|Math\.random\(\)[^\n]{0,40}(token|password|secret|key|nonce|salt)/i,
     message: "Math.random() is not cryptographically secure and must not be used to generate tokens, keys, salts, or nonces; use crypto.randomBytes / crypto.getRandomValues instead.",
   },
   {
