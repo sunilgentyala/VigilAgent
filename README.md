@@ -175,6 +175,13 @@ Network errors, timeouts, and non-404 error statuses are reported as INFO
 severity `unverified-package` findings. VigilAgent never reports a package
 as hallucinated just because the registry was unreachable.
 
+This module is a **package-existence verifier**, not a comprehensive
+supply-chain risk detector: a registry hit only confirms a name is
+registered, not that its contents are safe, so a slopsquatted package
+published under a hallucinated name passes this check by construction.
+Reputation signals (package age, download counts, maintainer history,
+provenance) are tracked as future work.
+
 ### Prompt Injection Auditor
 
 Scans added lines that look like comments or string literals for:
@@ -203,6 +210,12 @@ Scans added lines that look like comments or string literals for:
 - **Naive/deprecated cryptography**: `Math.random()` used for
   tokens/keys/nonces/salts, MD5/SHA-1-for-passwords/DES/3DES usage, AES-ECB
   mode.
+
+**Language coverage**: all three modules are currently most mature for
+JavaScript and Python. Go, Rust, and Java support is shallower today (the
+Package Hallucination Guard covers crates.io, but the AI Defect Heuristics
+patterns are tuned primarily against JS/Python idioms). Widening that
+coverage is tracked as future work.
 
 ## Development
 
