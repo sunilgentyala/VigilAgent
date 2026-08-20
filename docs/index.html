@@ -38,9 +38,11 @@
       <span class="brand-text">VigilAgent</span>
     </a>
     <div class="nav-links">
+      <a href="#why">Why it matters</a>
       <a href="#modules">Modules</a>
       <a href="#demo">Demo</a>
       <a href="#quickstart">Quickstart</a>
+      <a href="#usecases">Use cases</a>
       <a href="#architecture">Architecture</a>
       <a class="nav-cta" href="https://github.com/sunilgentyala/VigilAgent" target="_blank" rel="noopener">GitHub</a>
     </div>
@@ -49,7 +51,7 @@
 
 <main id="top">
   <section class="hero">
-    <div class="hero-badge">v0.1.0 &middot; open source &middot; MIT</div>
+    <div class="hero-badge">v0.1.1 &middot; open source &middot; MIT</div>
     <h1>Security review for the code your<br /><span class="accent">AI agent</span> just wrote.</h1>
     <p class="hero-sub">
       VigilAgent audits diffs from Claude Code, Cursor, and other coding agents for
@@ -70,6 +72,36 @@
           <span class="term-title">vigilagent</span>
         </div>
         <pre class="term-body" id="hero-typed"></pre>
+      </div>
+    </div>
+  </section>
+
+  <section class="why" id="why">
+    <h2>The problem, in numbers</h2>
+    <p class="section-sub">
+      This isn't a hypothetical risk. Independent research already measured it.
+    </p>
+    <div class="stat-grid">
+      <div class="stat-card">
+        <div class="stat-number">5.2&ndash;21.7%</div>
+        <p>of packages recommended by commercial and open-source LLMs across 576,000
+          generated samples were hallucinated: names that don't exist on the real
+          registry, and predictable enough for an attacker to pre-register.</p>
+        <cite>Spracklen et al., USENIX Security 2025</cite>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">30&ndash;40%</div>
+        <p>of AI-generated code completions, across independent replications of the
+          original GitHub Copilot security study, contained an identifiable security
+          weakness.</p>
+        <cite>Majdinasab et al. 2023; Fu et al. 2023</cite>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">0</div>
+        <p>of the popular terminal diff/review tools built for agentic coding
+          (hunk, codiff, difftastic, delta, "AI slop" scanners) check for any
+          of the above. They review readability, not safety.</p>
+        <cite>See comparison table below</cite>
       </div>
     </div>
   </section>
@@ -207,6 +239,44 @@
       <div class="code-block">
         <div class="code-label">JSON for tooling</div>
         <pre><code>git diff | vigilagent --json</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <section class="usecases" id="usecases">
+    <h2>How teams actually use it</h2>
+    <p class="section-sub">
+      VigilAgent slots into the workflow you already have with a coding agent.
+      A few concrete ways it gets used:
+    </p>
+    <div class="usecase-grid">
+      <div class="usecase-card">
+        <h3>Sanity-check an agent's diff before you commit</h3>
+        <p>Run it in the same terminal pane where you're already reviewing the
+          agent's output, before <code>git commit</code>.</p>
+        <pre><code>git diff | vigilagent</code></pre>
+      </div>
+      <div class="usecase-card">
+        <h3>Block agent-authored PRs with real findings in CI</h3>
+        <p>Add a job that fails only on HIGH-severity findings, hallucinated
+          dependencies, injected directives, swallowed exceptions, secrets,
+          naive crypto, not style nits.</p>
+        <pre><code>git diff origin/main...HEAD \
+  | vigilagent --fail-on-vuln</code></pre>
+      </div>
+      <div class="usecase-card">
+        <h3>Attach a readable report to a large agent-authored PR</h3>
+        <p>Give a human reviewer a summary they can skim instead of reading
+          findings interleaved with the raw diff.</p>
+        <pre><code>git diff main...feature/agent-branch \
+  | vigilagent --markdown > report.md</code></pre>
+      </div>
+      <div class="usecase-card">
+        <h3>Run offline or air-gapped</h3>
+        <p>Skip the network-dependent registry checks and still catch
+          prompt-injection directives and AI-defect heuristics, both of
+          which only need the text of the diff.</p>
+        <pre><code>git diff | vigilagent --no-package-check</code></pre>
       </div>
     </div>
   </section>

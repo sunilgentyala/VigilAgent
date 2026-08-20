@@ -4,6 +4,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Node.js](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen)](package.json)
 [![Docs](https://img.shields.io/badge/docs-live-blue)](https://sunilgentyala.github.io/VigilAgent/)
+[![Changelog](https://img.shields.io/badge/changelog-0.1.1-informational)](CHANGELOG.md)
 
 Security auditing CLI for AI-agent-authored code changesets: diffs produced
 by Claude Code, Cursor, Copilot Workspace, and similar coding agents.
@@ -44,6 +45,42 @@ change. It closes four gaps that are specific to AI-agent-authored code:
 4. **CI gating keyed to security, not style**: `--fail-on-vuln` gives you a
    single exit-code gate for HIGH severity findings, suitable for a
    pre-merge check on agent-authored branches.
+
+### The problem, backed by research
+
+This isn't a hypothetical risk. Independent research gives you real numbers:
+
+- **Package hallucination is common and predictable.** Spracklen et al.
+  (USENIX Security 2025) generated 576,000 code samples across 16 LLMs and
+  found commercial models invent a non-existent package name **5.2% of the
+  time**, open-source models **21.7%**, and that the same fake names
+  recur often enough for an attacker to pre-register them, a technique now
+  called *slopsquatting*. A 2026 re-evaluation across newer frontier
+  models found the rate has narrowed but is still **4.6-6.1%**, not zero.
+- **Prompt injection reaches coding agents through the files they read.**
+  A 2025 study of agentic coding editors demonstrated concrete injection
+  paths where an instruction embedded in an issue, README, or third-party
+  doc gets reproduced by the agent directly into committed code, a class
+  of attack survey work has since organized into a broader taxonomy of
+  indirect prompt injection against LLM agent systems.
+  Firewall-only defenses have been shown to be an incomplete answer,
+  which is why VigilAgent checks the agent's *output* rather than only
+  its inputs.
+- **Agent-authored code carries more security-bearing defects.** Multiple
+  independent studies replicating and extending the original GitHub
+  Copilot security study found roughly 30-40% of AI-generated completions
+  contain an identifiable security weakness, and a 2025 systematic
+  literature review found injection flaws, broken authentication, and
+  weak cryptography appear disproportionately relative to human-authored
+  code. A separate longitudinal study found the problem doesn't reliably
+  improve as you iterate with the same model.
+
+VigilAgent exists because none of the diff/review tooling built for
+agentic coding, hunk, codiff, difftastic, delta, "AI slop" scanners,
+actually checks for any of these three things. It's a narrow tool by
+design: it doesn't try to replace your SAST scanner, it catches the
+specific failure modes that are new because a model, not a person, wrote
+the diff.
 
 ### How it compares
 
@@ -91,6 +128,79 @@ git diff origin/main...HEAD | vigilagent --fail-on-vuln
 # Skip network registry lookups (e.g. offline, air-gapped CI)
 git diff | vigilagent --no-package-check
 ```
+
+## Use cases
+
+A few concrete scenarios for where VigilAgent fits into a workflow that
+already involves a coding agent:
+
+**1. "My agent just finished a task, let me sanity-check it before I
+commit."**
+
+```bash
+git diff | vigilagent
+```
+
+Run this in the same terminal pane you already review the agent's diff
+in. It takes a fraction of a second on a normal-sized change and tells
+you, before you `git commit`, whether the agent added a dependency that
+doesn't exist, left in a swallowed exception, or reproduced text that
+looks like it's talking to an AI rather than a human.
+
+**2. "I want a CI gate that blocks agent-authored PRs with real findings,
+not just style nits."**
+
+```yaml
+# .github/workflows/vigilagent.yml
+name: VigilAgent Security Audit
+on: pull_request
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - run: npx --yes vigilagent@latest
+          "$(git diff origin/${{ github.base_ref }}...HEAD)" \
+          --fail-on-vuln
+```
+
+The job fails only when there's a HIGH-severity finding, hallucinated
+dependency, injected directive, swallowed exception, hardcoded secret,
+or naive crypto, so it won't nag reviewers about style the way a slop
+scanner does.
+
+**3. "I want a Markdown report I can drop into a PR description or a
+Slack message."**
+
+```bash
+git diff main...feature/agent-branch | vigilagent --markdown > report.md
+```
+
+Useful when a human is doing the final review pass on a large
+agent-authored PR and wants a summary they can skim instead of reading
+findings interleaved with the raw diff.
+
+**4. "I'm offline, or my CI runner can't reach the public registries."**
+
+```bash
+git diff | vigilagent --no-package-check
+```
+
+Skips the network-dependent Package Hallucination Guard entirely and
+still runs the Prompt Injection Auditor and AI Defect Heuristics, both of
+which operate purely on the text of the diff.
+
+**5. "I want machine-readable output for my own tooling."**
+
+```bash
+git diff | vigilagent --json | jq '.findings[] | select(.severity=="HIGH")'
+```
+
+Pipe findings into whatever bot, dashboard, or Slack webhook your team
+already has for CI results.
 
 ## Usage
 
@@ -227,6 +337,13 @@ npm test        # builds, then runs node:test against dist/tests/
 
 Tests use Node's built-in `node:test` + `node:assert` runner against fixture
 diffs in `tests/fixtures/`, with no Jest or other test framework dependency.
+
+Unit tests cover the detection logic; they don't exercise the CLI's actual
+process-exit path against a live registry response. If you're changing
+`cli.ts` or `HttpRegistryChecker`, also run the built CLI directly against
+a real diff (`node dist/src/cli.js some.diff`) a few times in a row, not
+just `npm test`, since that's how a real crash on exit (see
+[CHANGELOG](CHANGELOG.md#011)) actually surfaced.
 
 ## Authors
 
